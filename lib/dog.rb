@@ -29,14 +29,15 @@ class Dog
   
   def self.find_by_name(name)
     sql = "SELECT * FROM dogs WHERE name = ?"
-    result = DB[:conn].execute(sql, name)[0]
+    result =DB[:conn].execute(sql, name)[0]
     Dog.new(result[0], result[1], result[2])
   end 
   
-  def self.find_by_id
+  def self.find_by_id(id)
     sql = "SELECT * FROM dogs WHERE id = ?"
-    result = DB[:conn].execute(sql, id)[0]
-    Dog.new(result[0], result[1], result[2])
+    result = DB[:conn].execute(sql, id).map do |row|
+      self.new_from_db(row)
+    end.first   
   end   
   
   def update 
